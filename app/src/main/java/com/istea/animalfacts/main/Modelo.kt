@@ -4,6 +4,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Modelo(
-    val fileSizeBytes: Long,
-    val url : String
+    val type: String,
+    val text : String
 )

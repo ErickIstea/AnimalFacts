@@ -42,10 +42,10 @@ class MainViewModel : ViewModel() {
 
     private suspend fun pegarleAlServer(){
         try {
-            val response = cliente.get("https://random.dog/woof.json")
+            val response = cliente.get("https://cat-fact.herokuapp.com/facts/random?animal_type=cat")
             if (response.status == HttpStatusCode.OK) {
                 val modelo = response.body<Modelo>()
-                estadoDeUI = MainEstado.Correcto(modelo.url)
+                estadoDeUI = MainEstado.Correcto(modelo.text)
 
             }else{
                 estadoDeUI = MainEstado.Error(response.status.description)
