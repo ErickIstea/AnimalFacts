@@ -3,6 +3,7 @@ package com.istea.animalfacts.main
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -26,8 +27,8 @@ fun MainView(modifier: Modifier = Modifier, estado: MainEstado, ejecutar: (MainI
     Column(modifier = modifier.padding(20.dp)) {
 
         when(estado){
-            is MainEstado.Correcto -> MainViewCorrecto()
-            is MainEstado.Error -> MainViewError()
+            is MainEstado.Correcto -> MainViewCorrecto(estado)
+            is MainEstado.Error -> MainViewError(estado)
             is MainEstado.Cargando -> MainViewCargando()
         }
 
@@ -41,9 +42,10 @@ fun MainView(modifier: Modifier = Modifier, estado: MainEstado, ejecutar: (MainI
 }
 
 @Composable
-fun MainViewCorrecto(){
+fun MainViewCorrecto(estado : MainEstado.Correcto){
     Text(
-        text = "Correcto"
+        text = estado.mensaje,
+        style = MaterialTheme.typography.titleLarge
     )
 }
 
@@ -55,16 +57,15 @@ fun MainViewCargando(){
 }
 
 @Composable
-fun MainViewError(){
+fun MainViewError(estado :MainEstado.Error){
     Text(
-        text = "Error"
-    )
+        text = estado.error)
 }
 
 @Preview(showBackground = true)
 @Composable
 fun MainPreview() {
     AnimalFactsTheme {
-        MainView(estado = MainEstado.Correcto){}
+        MainView(estado = MainEstado.Correcto("asdads")){}
     }
 }

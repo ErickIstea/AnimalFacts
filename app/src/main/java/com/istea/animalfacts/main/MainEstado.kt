@@ -1,7 +1,7 @@
 package com.istea.animalfacts.main
 
 sealed class MainEstado {
-    data object Correcto: MainEstado()
-    data object Error: MainEstado()
+    data class Correcto(val mensaje:String): MainEstado()
+    data class Error(val error:String): MainEstado()
     data object Cargando: MainEstado()
 }
