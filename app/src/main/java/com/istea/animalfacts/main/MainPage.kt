@@ -15,9 +15,11 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 
 @Composable
 fun MainPage(modifier: Modifier = Modifier) {
-    var viewmodel : MainViewModel = viewModel()
-    MainView(modifier = modifier, estado = viewmodel.estadoDeUI){ intencion ->
-        viewmodel.ejecutar(intencion)
+
+    val viewModel: MainViewModel = viewModel(factory = MainViewModel.Factory)
+
+    MainView(modifier = modifier, estado = viewModel.estadoDeUI){ intencion ->
+        viewModel.ejecutar(intencion)
     }
 }
 

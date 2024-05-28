@@ -4,17 +4,31 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewModelScope
-import io.ktor.client.HttpClient
-import io.ktor.client.call.body
-import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.client.request.get
-import io.ktor.http.HttpStatusCode
-import io.ktor.serialization.kotlinx.json.json
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
+import com.istea.animalfacts.main.repository.NetworkRepository
+import com.istea.animalfacts.main.repository.Repository
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class MainViewModel : ViewModel() {
+class MainViewModel(
+    private val repo: Repository
+) : ViewModel() {
+
+    companion object {
+        val Factory: ViewModelProvider.Factory = viewModelFactory {
+            initializer {
+                val savedStateHandle = createSavedStateHandle()
+                val myRepository = NetworkRepository()
+                MainViewModel(
+                    repo = myRepository,
+                )
+            }
+        }
+    }
 
     var estadoDeUI by mutableStateOf<MainEstado>(MainEstado.Correcto(""))
 
@@ -28,30 +42,8 @@ class MainViewModel : ViewModel() {
     private fun refrescar(){
         estadoDeUI = MainEstado.Cargando
         viewModelScope.launch {
-            pegarleAlServer()
-        }
-    }
-
-    private val cliente = HttpClient(){
-        install(ContentNegotiation){
-            json(kotlinx.serialization.json.Json {
-                ignoreUnknownKeys = true
-            })
-        }
-    }
-
-    private suspend fun pegarleAlServer(){
-        try {
-            val response = cliente.get("https://cat-fact.herokuapp.com/facts/random?animal_type=cat")
-            if (response.status == HttpStatusCode.OK) {
-                val modelo = response.body<Modelo>()
-                estadoDeUI = MainEstado.Correcto(modelo.text)
-
-            }else{
-                estadoDeUI = MainEstado.Error(response.status.description)
-            }
-        }catch (e:Exception){
-            estadoDeUI = MainEstado.Error(e.message ?: "error desconocido")
+            val jojo = repo.getFruta()
+            estadoDeUI = MainEstado.Correcto(jojo)
         }
     }
 
